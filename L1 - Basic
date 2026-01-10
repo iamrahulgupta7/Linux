@@ -1,0 +1,113 @@
+Linux is an open-source operating system based on Unix. It is widely used for servers, cloud platforms, DevOps tools, and production environments because it is stable, secure, scalable, and cost-effective.
+
+============================================================
+Linux Architecture
+============================================================
+Linux follows a layered architecture:
+
+------------------------------------
+Kernel
+------------------------------------
+Core of the OS
+Manages CPU, memory, processes, devices, and file systems
+------------------------------------
+Shell
+------------------------------------
+Interface between user and kernel
+Takes commands from user and executes them
+Examples: bash, sh, zsh
+------------------------------------
+System Libraries
+------------------------------------
+Provide functions for applications to interact with the kernel
+------------------------------------
+Applications
+------------------------------------
+User programs like editors, browsers, servers, DevOps tools
+
+
+============================================================
+What is a Linux Distribution?
+============================================================
+A Linux distribution (distro) is a complete OS package containing:
+
+Linux Kernel
+Package manager
+System tools
+Applications
+
+------------------------------------
+Popular Linux Distributions:
+------------------------------------
+Ubuntu – beginner-friendly, widely used in cloud
+CentOS / Rocky Linux – server environments
+Red Hat (RHEL) – enterprise use
+Amazon Linux – AWS optimized
+
+============================================================
+File System Structure 
+============================================================
+Linux follows a single root (/) directory:
+| Directory | Purpose                |
+| --------- | ---------------------- |
+| `/`       | Root directory         |
+| `/home`   | User home directories  |
+| `/etc`    | Configuration files    |
+| `/var`    | Logs and variable data |
+| `/bin`    | Essential commands     |
+| `/usr`    | User programs          |
+| `/tmp`    | Temporary files        |
+| `/opt`    | Optional software      |
+
+============================================================
+Basic Linux Commands
+============================================================
+------------------------------------
+File & Directory Commands
+------------------------------------
+ls        # list files
+pwd       # present working directory
+cd        # change directory
+mkdir     # create directory
+rm        # delete file/directory
+cp        # copy files
+mv        # move/rename files
+
+------------------------------------
+File Viewing
+------------------------------------
+cat       # view file
+less      # scroll view
+head      # first lines
+tail      # last lines
+
+------------------------------------
+Permissions
+------------------------------------
+chmod     # change permissions
+chown     # change owner
+
+Permission format:
+r = read, w = write, x = execute
+
+------------------------------------
+User & Process Management
+------------------------------------
+whoami    # current user
+id        # user info
+ps        # running processes
+top       # real-time processes
+kill      # terminate process
+
+------------------------------------
+Package Management
+------------------------------------
+apt install nginx     # Ubuntu
+yum install nginx     # CentOS
+dnf install nginx     # RHEL
+
+
+
+
+
+
