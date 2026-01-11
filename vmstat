@@ -92,7 +92,7 @@ procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----
 | `wa`   | I/O wait             |
 | `st`   | Steal time (VMs)     |
 
-👉 High wa → disk latency
+👉 High wa → disk latency (CPU spends only 2–4% time waiting for disk) 
 👉 High st → hypervisor over-commit (VM issue)
 
 
@@ -112,9 +112,92 @@ Disk statistics
 =======================================
 vmstat -d
 
+==============================================
+example logs
+==============================================
+disk- ------------reads------------ ------------writes----------- -----IO------
+       total merged sectors      ms  total merged sectors      ms    cur    sec
+nvme0n1  72247   9525 11385380   94606  24563  23577  589668   24428      0     32
+
+
+| Column    | Meaning                             |
+| --------- | ----------------------------------- |
+| `total`   | Total completed I/O requests        |
+| `merged`  | Requests merged by kernel           |
+| `sectors` | Sectors read/written                |
+| `ms`      | Time spent doing I/O (milliseconds) |
+| `cur`     | I/O currently in progress           |
+| `sec`     | I/O per second                      |
+
+----------------------------------------------------
+Reads
+----------------------------------------------------
+reads total = 72,247
+sectors read = 11,385,380
+read time = 94,606 ms (~94 seconds total)
+
+Average read latency = 94,606 ms / 72,247 reads ≈ 1.3 ms per read
+
+✅ 1.3 ms is FAST (NVMe is usually 0.1–2 ms)
+
+1 sector = 512 bytes ≈ 5.8 GB read from disk (That is a large amount of data being read repeatedly.)
+
+
+
+----------------------------------------------------
+Writes
+----------------------------------------------------
+writes total = 24,563
+sectors written = 589,668
+write time = 24,428 ms (~24 seconds)
+
+Average write latency = 24,428 / 24,563 ≈ 0.99 ms per write
+✅ Also fast
+
+----------------------------------------------------
+IO rate
+----------------------------------------------------
+sec = 32 IOPS
+
+
+✅ Disk is not slow
+❌ But disk is heavily used for reads
+
+
+----------------------------------------------------
+Check disk queue depth
+----------------------------------------------------
+cur = 0
+
+This means:
+No pending I/O
+Disk is keeping up with requests
+No backlog
+❌ If disk were slow → cur would grow (>1)
+
+
+
+
+----------------------------------------------------
+Disk analysis:
+➡ Disk is healthy but busy
+
+“Disk is slow, we need bigger IOPS” ( ❌ Wrong conclusion)
+“Memory pressure is forcing disk reads” (✅ Correct conclusion)
+----------------------------------------------------
+Very high I/O time per operation
+Growing I/O queue
+High I/O wait (wa) --> If disk were slow → wa would be 20–50%+
+Requests piling up (cur > 0)
 
 
 
 
 
-  
+
+
+
+
+
+
+
