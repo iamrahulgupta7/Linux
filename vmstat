@@ -1,0 +1,120 @@
+The vmstat command in Linux is used to report virtual memory statistics, but in practice it gives a high-level view of system performance including CPU, memory, swap, disk I/O, and process activity.
+
+=======================================
+🔹 Basic Syntax
+=======================================
+#vmstat [options] [delay] [count]
+
+
+example: vmstat 1 5
+➡ Updates every 1 second, 5 times
+
+
+=======================================
+example logs
+=======================================
+#vmstat -S M 10 5
+procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----
+ r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st
+ 3  0      0  23836     80   5322    0    0  1717    34  257  280 15  4 80  1  0
+ 2  0      0  23836     80   5322    0    0    30    72 1205 1732  6  7 87  0  0
+ 2  0      0  23836     80   5322    0    0    23    32 1030 1464  6  7 87  0  0
+ 2  0      0  23836     80   5322    0    0    38    76  883 1213  2  2 97  0  0
+ 1  0      0  23836     80   5322    0    0     2    50  985 1423  1  0 98  0  0
+
+=====================================================================================================================
+🔹 Column-by-Column Explanation
+=====================================================================================================================
+=======================================
+🧵 Procs
+=======================================
+| Column | Meaning                              |
+| ------ | ------------------------------------ |
+| `r`    | Runnable processes (waiting for CPU) |
+| `b`    | Blocked processes (waiting for I/O)  |
+
+👉 High r → CPU bottleneck
+👉 High b → Disk / I/O issue
+
+
+=======================================
+🧠 Memory
+=======================================
+| Column  | Meaning                 |
+| ------- | ----------------------- |
+| `swpd`  | Used swap (KB)          |
+| `free`  | Free memory             |
+| `buff`  | Memory used for buffers |
+| `cache` | Memory used for cache   |
+
+👉 Linux uses free memory as cache (this is normal)
+
+  
+=======================================
+🔁 Swap
+=======================================
+| Column | Meaning                   |
+| ------ | ------------------------- |
+| `si`   | Swap in (from disk → RAM) |
+| `so`   | Swap out (RAM → disk)     |
+
+👉 Non-zero si/so consistently = memory pressure
+  
+=======================================
+💽 I/O
+=======================================
+| Column | Meaning                   |
+| ------ | ------------------------- |
+| `bi`   | Blocks received from disk |
+| `bo`   | Blocks sent to disk       |
+
+👉 High values → heavy disk activity
+
+=======================================
+⚙️ System
+=======================================
+
+| Column | Meaning                     |
+| ------ | --------------------------- |
+| `in`   | Interrupts per second       |
+| `cs`   | Context switches per second |
+
+👉 Very high cs → too many threads / processes
+=======================================
+🖥️ CPU
+=======================================
+
+| Column | Meaning              |
+| ------ | -------------------- |
+| `us`   | User CPU time        |
+| `sy`   | System (kernel) time |
+| `id`   | Idle CPU             |
+| `wa`   | I/O wait             |
+| `st`   | Steal time (VMs)     |
+
+👉 High wa → disk latency
+👉 High st → hypervisor over-commit (VM issue)
+
+
+
+=======================================
+Live monitoring
+=======================================
+vmstat 1
+
+=======================================
+Show memory in MB
+=======================================
+vmstat -S M
+
+=======================================
+Disk statistics
+=======================================
+vmstat -d
+
+
+
+
+
+
+  
