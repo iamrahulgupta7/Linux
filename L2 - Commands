@@ -1,0 +1,60 @@
+🔥 CPU & Process Analysis
+top -b -n 1
+htop                # if installed
+ps aux
+ps -fp <PID>
+pidstat -u
+uptime
+
+🧠 Memory Analysis
+free -m
+vmstat 1 5
+cat /proc/meminfo
+smem                # if installed
+
+
+💽 Disk & IO
+df -h
+du -sh /path
+lsblk
+mount
+iostat
+vmstat -d
+
+🌐 Network
+ss -lntup
+netstat -tulnp
+ping google.com
+ip addr
+ip route
+traceroute
+
+📜 Logs & Services
+journalctl -xe
+journalctl -u nginx
+tail -n 100 /var/log/syslog
+tail -f /var/log/messages
+systemctl status nginx
+
+🧰 System Info
+uname -a
+hostnamectl
+lsb_release -a
+uptime
+who
+w
+
+📊 Performance Tools (if installed)
+sar
+perf stat
+perf top
+mpstat
+
+# commands that need to be monitored
+    "rm ",
+    "shutdown",
+    "reboot",
+    "mkfs",
+    "dd ",
+    ":(){",
+    "kill -9 1"
