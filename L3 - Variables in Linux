@@ -1,0 +1,229 @@
+=============================================
+1️⃣ Define a variable (basic)
+=============================================
+MYVAR=hello
+⚠️ No spaces around =
+
+=============================================
+2️⃣ Use the variable
+=============================================
+echo $MYVAR
+
+rahuls-MacBook-Pro-2:Documents rahul$ MYVAR=hello
+rahuls-MacBook-Pro-2:Documents rahul$ echo $MYVAR
+hello
+rahuls-MacBook-Pro-2:Documents rahul$
+
+
+=============================================
+3️⃣ Variable with spaces
+=============================================
+MYVAR="Hello World"
+echo $MYVAR
+
+rahuls-MacBook-Pro-2:Documents rahul$ MYVAR="Hello World"
+rahuls-MacBook-Pro-2:Documents rahul$ echo $MYVAR
+Hello World
+
+
+=============================================
+4️⃣ Use variable inside a command
+=============================================
+mkdir $MYDIR
+or safer:
+
+mkdir "$MYDIR"
+
+
+rahuls-MacBook-Pro-2:Documents rahul$ MYDIR=Linux
+rahuls-MacBook-Pro-2:Documents rahul$ mkdir $MYDIR
+rahuls-MacBook-Pro-2:Documents rahul$ ls Linux/
+rahuls-MacBook-Pro-2:Documents rahul$ cd Linux
+
+
+
+=============================================
+5️⃣ Command output → variable
+=============================================
+TODAY=$(date)
+echo "Today is $TODAY"
+
+
+
+rahuls-MacBook-Pro-2:Documents rahul$ TODAY=$(date)
+rahuls-MacBook-Pro-2:Documents rahul$ echo "Today is $TODAY"
+Today is Thu Jan 15 20:57:11 IST 2026
+rahuls-MacBook-Pro-2:Documents rahul$ 
+
+
+
+=============================================
+6️⃣ Export variable (child processes can use it)
+=============================================
+export MYVAR=hello
+Used in scripts, cron, systemd:
+
+echo $MYVAR
+
+---------------------------------------------------------------
+🔹 Validity (lifetime) of an exported variable
+---------------------------------------------------------------
+Short answer
+	An exported variable is valid only for the lifetime of the current shell session and its child processes.
+
+---------------------------------------------------------------
+🔹 What “export” actually means
+---------------------------------------------------------------
+
+export MYVAR=hello
+This does two things:
+	1. Creates a shell variable
+	2. Marks it to be inherited by child processes
+
+---------------------------------------------------------------
+🔹 How long does it live?
+---------------------------------------------------------------
+
+✅ Valid while:
+	• The current terminal (shell) is open
+	• Any process started from this shell is running
+❌ Lost when:
+	• You close the terminal
+	• You log out
+	• The shell exits or crashes
+
+---------------------------------------------------------------
+🔹 Scope example
+---------------------------------------------------------------
+export MYVAR=hello
+-----------
+bash        # start child shell
+echo $MYVAR # works ✅
+exit
+----------
+echo $MYVAR # still works ✅ (parent shell)
+
+But:
+
+------------
+bash
+export MYVAR=hello
+exit
+------------
+echo $MYVAR # ❌ gone (export was in child)
+
+➡️ Variables do not propagate upward.
+---------------------------------------------------------------
+🔹 Process tree visualization
+---------------------------------------------------------------
+Terminal
+ └── bash (MYVAR=hello)
+      ├── curl (inherits MYVAR)
+      ├── python (inherits MYVAR)
+      └── bash (inherits MYVAR)
+
+
+
+
+---------------------------------------------------------------
+🔹 Export vs Persistent variables
+---------------------------------------------------------------
+
+Type	Lifetime
+Non-exported	Current shell only
+Exported	Current shell + children
+Persistent (.bashrc)	Every new shell
+
+
+---------------------------------------------------------------
+🔹 Special cases
+---------------------------------------------------------------
+systemd
+	• Export in terminal ❌ NOT visible
+	• Must define in unit file or EnvironmentFile
+cron
+	• Export in terminal ❌ NOT visible
+	• Must define in crontab
+
+
+🧠 Golden rule
+	export ≠ permanent
+	It only controls inheritance, not persistence.
+
+
+
+=============================================
+7️⃣ Environment variable for one command
+=============================================
+MYVAR=hello mycommand
+
+
+🔹 What this actually does
+It sets an environment variable only for that single command execution.
+✔ MYVAR exists only while mycommand is running
+✔ It does NOT modify your shell environment
+✔ After the command finishes → variable is gone
+
+
+Example:
+TOKEN=abc123 curl -H "Authorization: Bearer $TOKEN" https://api.example.com
+-----------
+DEBUG=true python app.py
+=============================================
+8️⃣ Make variable persistent
+=============================================
+For current user
+Add to ~/.bashrc or ~/.zshrc:
+
+export MYVAR="value"
+Reload:
+
+source ~/.bashrc
+
+Then every new terminal will have it.
+=============================================
+9️⃣ Read-only variable
+=============================================
+readonly MYVAR=hello
+
+
+=============================================
+🔟 Delete a variable
+=============================================
+unset MYVAR
+
+=============================================
+1️⃣1️⃣ Single vs Double quotes (important)
+=============================================
+NAME=rahul
+VAR1='$NAME'   # literal
+VAR2="$NAME"   # expands
+
+
+rahuls-MacBook-Pro-2:Documents rahul$ NAME=rahul
+rahuls-MacBook-Pro-2:Documents rahul$ VAR1='$NAME'
+rahuls-MacBook-Pro-2:Documents rahul$ VAR2="$NAME"
+rahuls-MacBook-Pro-2:Documents rahul$ echo $VAR1
+$NAME
+rahuls-MacBook-Pro-2:Documents rahul$ echo $VAR2
+rahul
+rahuls-MacBook-Pro-2:Documents rahul$ 
+
+
+=============================================
+1️⃣2️⃣ Use variable safely (best practice)
+=============================================
+
+echo "$MYVAR"
+Prevents issues with spaces and globbing.
+
+=============================================
+🧠 Quick summary
+=============================================
+Task	Syntax
+Create	VAR=value
+Use	$VAR
+Export	export VAR=value
+Delete	unset VAR
+Persistent	.bashrc
+
