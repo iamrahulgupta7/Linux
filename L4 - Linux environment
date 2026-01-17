@@ -1,0 +1,146 @@
+=====================================================================================
+🔹 What is the Linux environment?
+=====================================================================================
+A Linux environment is a set of variables and settings that are available to
+a running process (shell, script, service, command).
+
+
+These variables control:
+- Where commands are found
+- How programs behave
+- Credentials, tokens, locale, timezone, etc.
+
+
+=====================================================================================
+🔹 Environment variables
+=====================================================================================
+Environment variables are key=value pairs.
+
+Example
+PATH=/usr/bin:/bin
+HOME=/home/rahul
+USER=rahul
+
+=====================================================================================
+🔹 View environment variables
+=====================================================================================
+env
+(or)
+printenv
+
+
+Specific variable:
+echo $PATH
+
+=====================================================================================
+🔹 Create an environment variable
+=====================================================================================
+For current shell
+MYVAR=hello
+
+Export it (available to child processes)
+export MYVAR=hello
+
+=====================================================================================
+🔹 Variable scope (VERY important)
+=====================================================================================
+| Type                | Visible where?          | Lifetime          |
+| ------------------- | ----------------------- | ----------------- |
+| Shell variable      | Current shell only      | Until shell exits |
+| Exported variable   | Shell + child processes | Until shell exits |
+| Persistent variable | All future shells       | Until removed     |
+
+
+=====================================================================================
+🔹 Temporary environment for one command
+=====================================================================================
+MYVAR=hello mycommand
+
+
+✔ Exists only while mycommand runs
+✔ Does not affect your shell
+
+=====================================================================================
+🔹 Persistent environment variables
+=====================================================================================
+User-level
+--------------------------
+Files:
+--------------------------
+~/.bashrc
+
+~/.profile
+
+~/.zshrc
+
+Example:
+
+export JAVA_HOME=/usr/lib/jvm/java-17
+
+--------------------------
+System-wide
+--------------------------
+Files:
+
+/etc/environment
+
+/etc/profile
+
+/etc/profile.d/*.sh
+
+=====================================================================================
+🔹 Common important Linux environment variables
+=====================================================================================
+| Variable    | Purpose                    |
+| ----------- | -------------------------- |
+| PATH        | Where shell finds commands |
+| HOME        | User home directory        |
+| USER        | Current user               |
+| SHELL       | Default shell              |
+| PWD         | Current directory          |
+| LANG / LC_* | Locale                     |
+| EDITOR      | Default editor             |
+
+
+=====================================================================================
+🔹 Environment vs Shell config
+=====================================================================================
+
+| File               | Purpose                  |
+| ------------------ | ------------------------ |
+| `.bashrc`          | Interactive shell config |
+| `.profile`         | Login shell              |
+| `/etc/environment` | Global env vars          |
+| systemd unit       | Service env              |
+
+
+=====================================================================================
+🔹 Environment in automation
+=====================================================================================
+systemd
+
+❌ Does NOT read .bashrc
+✔ Use:
+
+Environment="VAR=value"
+
+cron
+
+❌ Minimal environment
+✔ Define PATH explicitly
+
+=====================================================================================
+🔹 Why environment matters
+=====================================================================================
+
+“Command works in terminal but fails in cron/systemd”
+
+Wrong PATH
+
+Missing credentials
+
+Wrong locale or timezone
+
+🧠 Simple mental model
+
+Environment = configuration backpack carried by every process
