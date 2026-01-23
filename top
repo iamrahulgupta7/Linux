@@ -1,0 +1,132 @@
+root@rahul-test:/home/ubuntu# top
+
+top - 07:15:32 up 1 day, 17:17,  1 user,  load average: 0.02, 0.15, 0.23
+Tasks: 185 total,   1 running, 184 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  3.0 us,  2.0 sy,  0.0 ni, 94.3 id,  0.2 wa,  0.0 hi,  0.2 si,  0.3 st 
+MiB Mem :   3837.0 total,    219.9 free,   1567.6 used,   2359.6 buff/cache     
+MiB Swap:      0.0 total,      0.0 free,      0.0 used.   2269.4 avail Mem 
+
+    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND                                         
+   6438 root      20   0 1516400 285464  73224 S   3.0   7.3  80:49.07 kube-apiserver                                  
+ 
+
+
+==================================================
+ Explanation
+==================================================
+
+=================================================
+1️⃣ System load (very important)
+=================================================
+load average: 0.02, 0.15, 0.23
+
+
+These are 1 / 5 / 15 minute load averages.
+All values << 1
+Means CPU is mostly idle
+No backlog of runnable processes
+✅ System is NOT under load
+
+
+Load average = average number of processes that are:
+Runnable (using CPU or waiting for CPU)
+OR uninterruptible (waiting for I/O like disk)
+
+| State | Meaning                          | Counted? |
+| ----- | -------------------------------- | -------- |
+| `R`   | Running / ready to run           | ✅ Yes    |
+| `D`   | Uninterruptible sleep (disk I/O) | ✅ Yes    |
+
+------------------------------------
+TO fetch these process id's
+------------------------------------
+ps -eo state,pid,cmd | grep '^D' 
+ps -eo state,pid,cmd | grep '^R'
+
+Add --> |wc -l --> to get the count of it
+Formula:
+new_load = old_load × e^(-5/τ) + current_load × (1 - e^(-5/τ))
+Where:
+τ = 1, 5, 15 minutes
+current_load = number of runnable + uninterruptible processes
+
+
+📌 Load must be compared to CPU cores
+
+------------------------------------
+IMP: Why high load with low CPU happens
+------------------------------------
+Very important real-world scenario:
+
+CPU idle: 90%
+Load avg: 10.0
+Reason:
+Many processes stuck in D state
+Usually disk I/O or NFS/network storage issue
+👉 Load ≠ CPU usage
+
+=================================================
+2️⃣ Tasks (process states)
+=================================================
+Tasks: 185 total, 1 running, 184 sleeping, 0 stopped, 0 zombie
+
+
+1 running → normal
+0 zombie → very healthy
+Most processes are sleeping → idle system
+✅ No process issues
+
+
+| Code | Meaning    |
+| ---- | ---------- |
+| R    | Running    | Process is currently executing on CPU /
+| S    | Sleeping   | Waiting for an event (I/O, signal, timer)
+| D    | Disk sleep | Uninterruptible Sleep (I/O wait) / 
+| T    | Stopped    | Process execution stopped
+| Z    | Zombie     | Process has finished execution -> Parent has NOT collected exit status
+
+D state is dangerous
+=================================================
+3️⃣ CPU breakdown
+=================================================
+%Cpu(s):  3.0 us,  2.0 sy, 94.3 id, 0.2 wa, 0.3 st
+
+
+Meaning:
+94.3% idle → CPU is free
+3% user + 2% system → light workload
+0.2% wa → almost no I/O wait
+0.3% st (steal time) → negligible (good for VM)
+✅ CPU is extremely healthy
+
+🚨 Interview tip:
+If st > 5–10%, it indicates noisy neighbor problem on cloud VMs.
+
+
+=================================================
+4️⃣ Memory analysis 
+=================================================
+MiB Mem : 3837 total
+          219.9 free
+          1567.6 used
+          2359.6 buff/cache
+
+
+At first glance:
+Only 219 MB free 😱
+But the key line is:
+2269.4 avail Mem
+What this means:
+Linux is using RAM for cache (buff/cache)
+Cache can be freed instantly if an app needs memory
+✅ You effectively have ~2.2 GB usable memory
+⚠️ No swap configured:
+
+MiB Swap: 0 total
+This is acceptable only if memory usage is stable
+For Kubernetes nodes, usually small swap = disabled is OK.
+
+
+
+
+
