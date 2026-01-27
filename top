@@ -127,6 +127,169 @@ This is acceptable only if memory usage is stable
 For Kubernetes nodes, usually small swap = disabled is OK.
 
 
+====================================================================================
+
+PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+6438 root     20   0 1516400 285464  73224 S   3.0   7.3  80:49.07 kube-apiserver
+====================================================================================
+
+🧩 Column-by-column explanation
 
 
+PID → 6438
+Process ID
+
+Unique identifier for kube-apiserver
+------------------------------------------------------------
+USER → root
+Process owner
+
+Kubernetes control-plane components usually run as root
+------------------------------------------------------------
+PR → 20
+Priority (used by Linux scheduler)
+
+20 is the default priority
+
+Lower number = higher priority
+(higher priority processes get CPU first)
+
+------------------------------------------------------------
+NI → 0
+Nice value
+
+Range: -20 (highest priority) to 19 (lowest)
+
+0 = normal scheduling priority
+
+------------------------------------------------------------
+VIRT → 1,516,400 KB (~1.45 GB)
+Virtual memory size
+
+Includes:
+
+RAM
+
+swapped memory
+
+memory-mapped files
+
+Not actual RAM usage
+
+This often looks scary but is normal for Go binaries like Kubernetes.
+
+------------------------------------------------------------
+RES → 285,464 KB (~278 MB)
+Resident memory
+
+Actual physical RAM currently used
+
+This is the real memory footprint
+
+------------------------------------------------------------
+SHR → 73,224 KB (~71 MB)
+Shared memory
+
+Memory shared with other processes (shared libs)
+
+S → S (State)
+S = Sleeping
+
+Process is waiting for something (I/O, event)
+
+Other states you may see:
+
+R → Running
+
+D → Uninterruptible sleep (disk I/O)
+
+Z → Zombie
+
+------------------------------------------------------------
+%CPU → 3.0
+Percentage of one CPU core
+
+On a 4-core system:
+
+Max per process ≈ 400%
+
+So 3.0% = very low CPU usage
+
+
+------------------------------------------------------------
+%MEM → 7.3
+Percentage of total system RAM
+
+kube-apiserver is using ~7.3% of RAM
+
+
+------------------------------------------------------------
+TIME+ → 80:49.07
+Total CPU time used since process start
+
+Format: minutes:seconds.hundredths
+
+Accumulated across all cores
+
+This shows it’s been running a long time.
+
+------------------------------------------------------------
+COMMAND → kube-apiserver
+Executable name
+
+Core Kubernetes control-plane component
+
+Handles:
+
+API requests
+
+AuthN/AuthZ
+
+etcd communication
+
+
+------------------------------------------------------------
+1️⃣ Memory reservation ≠ memory usage
+
+Modern allocators (glibc, Go, JVM):
+
+Reserve large chunks
+
+Commit memory only when touched
+
+Example:
+
+malloc(1GB)
+
+
+→ VIRT jumps by 1GB
+→ RES stays near zero until used
+
+2️⃣ Memory-mapped files
+
+Shared libraries, binaries, files via mmap():
+
+Count fully in VIRT
+
+But only pages actually used appear in RES
+
+So:
+
+A 500MB mapped file
+
+Might use only 10MB in RAM
+
+3️⃣ Shared memory counted per process
+
+Shared libs are:
+
+Counted fully in VIRT
+
+But shared across processes
+
+So if 10 processes load the same library:
+
+Each shows it in VIRT
+
+RAM is used only once
 
