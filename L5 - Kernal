@@ -1,0 +1,61 @@
+1️⃣ Kernel — the heart of Linux ❤️
+
+
+===================================================================
+What the kernel is
+===================================================================
+
+The kernel is the core of the operating system.
+It directly talks to the hardware and manages everything.
+
+👉 Users and applications never talk to hardware directly — only the kernel does.
+
+
+===================================================================
+What the kernel does
+===================================================================
+
+🔹 Process management
+
+Creates, schedules, and kills processes
+Decides which process gets CPU
+Handles multitasking
+
+Examples:
+fork()
+exec()
+kill()
+
+
+🔹 Memory management
+
+Allocates RAM to processes. 
+Handles virtual memory, paging, swapping.
+Prevents one process from accessing another’s memory.
+
+
+🔹 Device management
+
+Talks to hardware via device drivers
+Treats devices as files:
+
+/dev/sda
+/dev/null
+/dev/tty
+
+
+🔹 File system management
+
+Manages files, directories, permissions
+Supports multiple file systems:
+ext4, xfs, btrfs, nfs
+
+
+🔹 System calls
+
+Applications request kernel services using system calls:
+read(), write(), open(), close()
+
+
+**Final :**
+The Linux kernel is the core component that manages CPU, memory, devices, filesystems, and provides system calls for applications.
