@@ -1,0 +1,45 @@
+2️⃣ Shell — the user interface 🖥️
+
+=============================================
+What the shell is
+=============================================
+The shell is a command interpreter.
+
+It:
+
+Takes commands from the user
+Interprets them
+Asks the kernel to execute them
+
+👉 Shell ≠ Kernel
+
+=============================================
+Common shells
+=============================================
+
+bash (most common)
+sh
+zsh
+fish
+
+Example flow
+ls -l
+
+
+What happens:
+Shell reads the command
+Shell finds /bin/ls
+Shell asks kernel to execute it
+Kernel runs it and returns output
+
+=============================================
+Why shell matters
+=============================================
+Automation (scripts)
+System administration
+DevOps / SRE work
+
+
+Final:
+
+The shell is a command-line interface that allows users to interact with the Linux kernel by executing commands and scripts.
