@@ -1,0 +1,110 @@
+=================================================================
+What is TCP?
+=================================================================
+TCP (Transmission Control Protocol) is a Layer 4 (Transport layer) protocol that provides reliable, ordered, and error-checked delivery of data between two hosts.
+
+
+=================================================================
+Key Features of TCP (memorize these)
+=================================================================
+Connection-oriented
+
+Reliable delivery
+
+Ordered packets
+
+Error detection & retransmission
+
+Flow control
+
+Congestion control
+
+=================================================================
+TCP 3-Way Handshake 
+=================================================================
+Purpose
+
+To establish a reliable connection before data transfer.
+
+Steps
+
+SYN – Client → Server (request to connect)
+
+SYN-ACK – Server → Client (acknowledge + agree)
+
+ACK – Client → Server (connection established)
+
+📌 After this, data transfer begins.
+
+
+=================================================================
+TCP Connection Termination (4-Way Handshake)
+=================================================================
+FIN → request close
+
+ACK → acknowledge
+
+FIN → close from other side
+
+ACK → connection closed
+=================================================================
+TCP vs UDP (classic comparison)
+=================================================================
+TCP	UDP
+Reliable	Unreliable
+Connection-oriented	Connectionless
+Slower	Faster
+Ordered packets	No order guarantee
+Retransmission	No retransmission
+Used by HTTP, HTTPS, SSH	Used by DNS, VoIP, streaming
+
+=================================================================
+TCP Ports (examples interviewers expect)
+=================================================================
+80 → HTTP
+
+443 → HTTPS
+
+22 → SSH
+
+5432 → PostgreSQL
+
+3306 → MySQL
+
+
+=================================================================
+TCP Flags 
+=================================================================
+SYN – Start connection
+
+ACK – Acknowledge
+
+FIN – Graceful close
+
+RST – Force close
+
+PSH – Push data immediately
+
+URG – Urgent data
+
+=================================================================
+Real-world example
+=================================================================
+When you open a website:
+
+TCP handshake establishes connection
+
+TLS handshake secures it
+
+HTTP request is sent
+
+Data arrives in order, without loss
+
+=================================================================
+Note
+=================================================================
+“TCP ensures reliable and ordered delivery using acknowledgements and retransmissions.”
+
+“TCP works at OSI Layer 4.”
+
+“Three-way handshake is used to establish a TCP connection.”
