@@ -1,0 +1,72 @@
+======================================================
+ICMP
+======================================================
+“ICMP is a Layer 3 protocol used for network diagnostics and error reporting, commonly used by ping and traceroute.”
+
+
+| Symptom        | ICMP Result             |
+| -------------- | ----------------------- |
+| Host down      | No echo reply           |
+| Firewall block | Request sent, no reply  |
+| TTL expired    | Time Exceeded           |
+| Route missing  | Destination unreachable |
+
+
+======================================================
+What is ping?
+======================================================
+ping is a network diagnostic command used to test reachability between two hosts.
+Protocol: ICMP
+OSI Layer: Layer 3 (Network layer)
+Purpose: Check if a host is alive + measure latency
+
+======================================================
+How ping works (behind the scenes)
+======================================================
+Your system sends an ICMP Echo Request
+Target replies with ICMP Echo Reply
+ping measures round-trip time (RTT)
+📌 No ports involved (unlike TCP/UDP)
+
+
+======================================================
+Basic ping command
+======================================================
+ping google.com
+-----------------------------
+Typical output:
+-----------------------------
+64 bytes from 142.250.190.14: icmp_seq=1 ttl=118 time=22.4 ms
+
+-----------------------------
+How to read this line
+-----------------------------
+64 bytes → payload size
+icmp_seq=1 → sequence number
+ttl=118 → hops left
+time=22.4 ms → latency
+
+
+======================================================
+When ping fails – what it means
+======================================================
+| Output                         | Meaning                     |
+| ------------------------------ | --------------------------- |
+| `Request timeout`              | Host unreachable / firewall |
+| `Destination Host Unreachable` | Routing issue               |
+| `100% packet loss`             | Host down or ICMP blocked   |
+| Ping works, app fails          | Layer 4/7 issue             |
+
+
+======================================================
+Ping in AWS / Cloud 
+======================================================
+EC2 Security Groups may block ICMP
+NACLs may block ICMP
+Load balancers often don’t reply to ping
+📌 Ping failing ≠ instance down
+
+Note:
+ping uses ICMP
+ICMP has no ports
+Ports belong to TCP/UDP (Layer 4)
