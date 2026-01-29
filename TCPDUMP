@@ -1,0 +1,371 @@
+===============================================
+Tcpdump
+===============================================
+tcpdump is a packet capture tool used to inspect network traffic at a very low level — TCP flags, handshakes, retransmissions, resets, everything.
+
+
+👉 Works mainly at OSI Layer 3 & 4
+
+
+===============================================
+1️⃣ Basic TCP Capture (most used)
+===============================================
+tcpdump -i eth0 tcp
+
+
+Captures all TCP traffic on eth0.
+
+
+===============================================
+2️⃣ Capture TCP traffic for a specific port
+===============================================
+
+
+tcpdump -i eth0 tcp port 443
+
+Used when debugging:
+
+HTTPS
+PostgreSQL (5432)
+SSH (22)
+
+
+===============================================
+3️⃣ Capture traffic between two hosts
+===============================================
+
+tcpdump -i eth0 tcp and host 10.0.0.5
+--> It captures only TCP network packets on interface eth0 that are sent to or received from 10.0.0.5.
+
+Or very precise:
+
+tcpdump -i eth0 tcp and src host 10.0.0.5 and dst port 5432
+
+===============================================
+4️⃣ TCP 3-Way Handshake Troubleshooting
+===============================================
+
+Healthy handshake looks like:
+SYN
+SYN-ACK
+ACK
+
+Command
+tcpdump -i eth0 tcp port 80 -nn
+
+What you might see
+✅ Normal
+SYN
+SYN-ACK
+ACK
+
+❌ Issue: SYN but no SYN-ACK
+SYN
+SYN
+SYN
+
+
+💡 Problem:
+
+Firewall blocking
+
+Port closed
+
+Security group / NACL issue (AWS)
+
+
+===============================================
+5️⃣ Debug “Connection refused”
+===============================================
+
+tcpdump output:
+SYN
+RST
+
+
+💡 Meaning:
+
+Server reachable
+
+But nothing listening on that port
+
+👉 Check:
+
+ss -lntp
+
+
+===============================================
+6️⃣ Debug “Connection timeout”
+===============================================
+
+
+tcpdump output:
+SYN
+(no response)
+
+
+💡 Meaning:
+
+Packet dropped
+
+Firewall / routing issue
+
+Security group / NACL / network ACL
+
+
+===============================================
+7️⃣ Debug TCP Reset (RST)
+===============================================
+
+
+tcpdump -i eth0 'tcp[tcpflags] & tcp-rst != 0'
+
+RST means:
+
+App crashed
+
+Load balancer closed connection
+
+Idle timeout exceeded
+
+Very common with:
+
+ALB idle timeout
+
+Backend app crashes
+
+
+===============================================
+8️⃣ Debug TCP Retransmissions (packet loss)
+===============================================
+
+tcpdump -i eth0 tcp
+
+
+Look for:
+
+Retransmission
+Dup ACK
+
+
+💡 Meaning:
+
+Network congestion
+
+Packet loss
+
+MTU issues
+
+===============================================
+9️⃣ Capture and Analyze Later (production-safe)
+===============================================
+tcpdump -i eth0 tcp port 443 -w capture.pcap
+
+
+Then analyze with:
+
+Wireshark
+
+tshark
+
+
+===============================================
+🔟 Debug Slow TCP Connections
+===============================================
+
+
+Check:
+
+Long gaps between packets
+
+Multiple retransmissions
+
+Window size shrinking
+
+👉 Often caused by:
+
+CPU throttling
+
+App slowness
+
+Network latency
+
+
+===============================================
+TCP Flags Cheat Sheet
+===============================================
+| Flag | Meaning          |
+| ---- | ---------------- |
+| SYN  | Start connection |
+| ACK  | Acknowledge      |
+| FIN  | Graceful close   |
+| RST  | Force close      |
+| PSH  | Push data        |
+
+
+
+===============================================
+1️⃣ Basic tcpdump line anatomy
+===============================================
+12:01:22.123456 IP 10.0.0.5.54321 > 10.0.0.10.80: Flags [S], seq 123456, win 64240, length 0
+
+
+
+How to read it
+
+12:01:22.123456 → Timestamp
+
+IP → Layer 3 protocol
+
+10.0.0.5.54321 → Source IP + source port
+
+> → Direction
+
+10.0.0.10.80 → Destination IP + port
+
+Flags [S] → SYN
+
+seq → Sequence number
+
+win → TCP window size
+
+length 0 → No payload (normal for SYN)
+
+===============================================
+2️⃣ Healthy TCP 3-Way Handshake (ideal case)
+===============================================
+
+10.0.0.5.54321 > 10.0.0.10.80: Flags [S]
+10.0.0.10.80 > 10.0.0.5.54321: Flags [S.]
+10.0.0.5.54321 > 10.0.0.10.80: Flags [.]
+
+Meaning
+
+[S] → SYN
+
+[S.] → SYN-ACK
+
+[.] → ACK
+
+✅ Connection established successfully
+
+===============================================
+3️⃣ Firewall / Security Group Blocking (SYN retry loop)
+===============================================
+
+10.0.0.5.54321 > 10.0.0.10.80: Flags [S]
+(retries)
+10.0.0.5.54321 > 10.0.0.10.80: Flags [S]
+
+What this tells you
+
+Client is sending SYN
+
+Server never responds
+
+❌ Network drop
+👉 AWS SG / NACL / firewall / routing issue
+
+===============================================
+4️⃣ Port Closed (Connection Refused)
+===============================================
+10.0.0.5.54321 > 10.0.0.10.80: Flags [S]
+10.0.0.10.80 > 10.0.0.5.54321: Flags [R.]
+
+Meaning
+
+Server is reachable
+
+Port not listening
+
+👉 Check:
+
+ss -lntp | grep 80
+
+===============================================
+5️⃣ Application Crash / Forced Close (RST mid-connection)
+===============================================
+
+10.0.0.5.54321 > 10.0.0.10.80: Flags [.], length 512
+10.0.0.10.80 > 10.0.0.5.54321: Flags [R.]
+
+Meaning
+
+Connection was established
+
+Server suddenly reset
+
+👉 Causes:
+
+App crash
+
+ALB idle timeout
+
+Pod restart (K8s)
+
+===============================================
+6️⃣ Slow Network / Packet Loss (Retransmissions)
+===============================================
+Flags [.], seq 1000:1500
+Flags [.], seq 1000:1500 (retransmission)
+Flags [.], seq 1000:1500 (retransmission)
+
+Meaning
+
+ACK not received
+
+TCP resending packets
+
+👉 Causes:
+
+Packet loss
+
+MTU mismatch
+
+Network congestion
+
+===============================================
+7️⃣ TCP FIN – Graceful Connection Close
+===============================================
+Flags [F.]
+Flags [.]
+Flags [F.]
+Flags [.]
+
+Meaning
+
+Normal, clean shutdown
+
+Nothing to worry about
+
+===============================================
+8️⃣ TIME_WAIT symptom (not tcpdump but important)
+===============================================
+
+You’ll often see:
+
+New connections fail
+
+tcpdump shows handshake but app can’t connect
+
+Check:
+
+ss -ant | grep TIME-WAIT | wc -l
+
+
+===============================================
+9️⃣ Common tcpdump Flags Cheat Sheet
+===============================================
+
+| Flag   | Meaning   |
+| ------ | --------- |
+| `[S]`  | SYN       |
+| `[S.]` | SYN-ACK   |
+| `[.]`  | ACK       |
+| `[F.]` | FIN       |
+| `[R.]` | RST       |
+| `[P.]` | PSH + ACK |
+
+
+
+
