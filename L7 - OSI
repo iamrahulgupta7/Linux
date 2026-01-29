@@ -148,3 +148,117 @@ Layer 1 – Bits sent over cable
 | 3         | Network      | IP, ICMP              |
 | 2         | Data Link    | Ethernet, ARP         |
 | 1         | Physical     | Cables, signals       |
+
+
+
+
+===============================================
+OSI Layers – How They Work (Real Example)
+===============================================
+
+🎯 Scenario
+
+You open a browser and access:
+
+https://www.example.com
+
+===============================================
+7️⃣ Application Layer
+===============================================
+
+👉 What you do
+
+You type the URL
+Browser creates an HTTP GET request
+Protocols involved
+HTTP / HTTPS
+DNS (to resolve domain)
+📌 This is where applications live
+
+===============================================
+6️⃣ Presentation Layer
+===============================================
+
+👉 Data preparation
+
+HTTP data is encrypted using TLS
+Data is formatted (JSON, HTML, etc.)
+📌 This ensures secure & readable data
+
+===============================================
+5️⃣ Session Layer
+===============================================
+
+👉 Session management
+
+TLS session is created
+Keeps the session alive
+Handles reconnects if needed
+📌 “Are we still connected?”
+
+===============================================
+4️⃣ Transport Layer
+===============================================
+
+👉 Reliable delivery
+
+TCP connection is created
+3-way handshake happens
+SYN → SYN-ACK → ACK
+Data split into segments
+Port used: 443
+📌 Ensures data reaches correctly
+
+===============================================
+3️⃣ Network Layer
+===============================================
+
+👉 Routing
+
+Source IP & destination IP added
+Router decides the best path
+📌 Moves packet across networks
+
+===============================================
+2️⃣ Data Link Layer
+===============================================
+
+👉 Local delivery
+
+Converts IP → MAC using ARP
+Frames created
+Switches forward frames
+📌 Delivers within local network
+
+===============================================
+1️⃣ Physical Layer
+===============================================
+
+👉 Transmission
+
+Bits (0s & 1s) sent over:
+Ethernet
+Fiber
+Wi-Fi
+📌 Actual electrical / optical signals
+
+===============================================
+🔁 On the Server Side
+===============================================
+The process happens in reverse order:
+1️⃣ → 7️⃣
+Server reads bits → frames → packets → segments → decrypted → HTTP response sent back
+
+===============================================
+Short Summary
+===============================================
+When a user accesses a website, the request is created at the application layer, encrypted at the presentation layer, managed by the session layer, reliably transmitted by TCP at the transport layer, routed by IP at the network layer, framed using MAC at the data link layer, and finally transmitted as bits at the physical layer.
+
+
+==============================================================================================
+If ping works but website doesn’t, which layer is broken?
+==============================================================================================
+A:
+
+Ping → Layer 3 works
+Website → Layer 4 or 7 issue
