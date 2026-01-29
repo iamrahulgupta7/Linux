@@ -136,3 +136,15 @@ Layer 3 – IP routing
 Layer 2 – MAC resolution
 
 Layer 1 – Bits sent over cable
+
+
+
+| OSI Layer | Name         | Example Protocols     |
+| --------- | ------------ | --------------------- |
+| 7         | Application  | HTTP, HTTPS, FTP, DNS |
+| 6         | Presentation | SSL/TLS               |
+| 5         | Session      | NetBIOS, RPC          |
+| 4         | Transport    | TCP, UDP              |
+| 3         | Network      | IP, ICMP              |
+| 2         | Data Link    | Ethernet, ARP         |
+| 1         | Physical     | Cables, signals       |
