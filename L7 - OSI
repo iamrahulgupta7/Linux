@@ -1,0 +1,138 @@
+================================================================
+OSI Model (7 Layers)
+================================================================
+Mnemonic: All People Seem To Need Data Processing
+(Top → Bottom)
+
+
+
+================================================================
+7. Application
+================================================================
+
+👉 What users & applications interact with
+
+Examples: HTTP, HTTPS, FTP, SMTP, DNS
+
+This is where your browser, curl, Postman live
+
+Deals with requests, responses, APIs
+
+🔹 If a website isn’t loading → start thinking here
+
+
+================================================================
+6. Presentation
+================================================================
+👉 Data formatting, encryption, compression
+
+Examples:
+
+SSL/TLS encryption
+
+JSON ↔ XML ↔ binary
+
+Makes sure data is readable by the application
+
+🔹 HTTPS encryption happens here
+
+================================================================
+5. Session
+================================================================
+👉 Session management
+
+Establishes, maintains, terminates sessions
+
+Authentication sessions, checkpoints, re-connects
+
+🔹 “Are we still connected?” layer
+
+
+================================================================
+4. Transport
+================================================================
+
+👉 End-to-end communication & reliability
+
+Protocols: TCP, UDP
+
+Handles:
+
+Ports (80, 443, 5432)
+
+Flow control
+
+Retransmission
+
+🔹 TCP handshake (SYN, SYN-ACK, ACK) happens here
+
+================================================================
+3. Network
+================================================================
+
+👉 Routing & IP addressing
+
+Protocols: IP, ICMP
+
+Devices: Routers
+
+Decides best path to destination
+
+🔹 ping, traceroute → Layer 3
+
+
+================================================================
+2. Data Link
+================================================================
+
+👉 MAC addresses & local delivery
+
+Ethernet, ARP
+
+Devices: Switches
+
+Frames data for physical transmission
+
+🔹 ARP: “Who has this IP? Tell me your MAC”
+
+================================================================
+1. Physical
+================================================================
+👉 Actual bits on the wire
+
+Cables, fiber, voltages, NICs
+
+0s and 1s
+
+🔹 Broken cable = Layer 1 issue
+
+
+================================================================
+Quick DevOps / Troubleshooting Mapping
+================================================================
+Problem	Likely Layer
+Cable unplugged	Layer 1
+ARP not resolving	Layer 2
+No route to host	Layer 3
+Port blocked / firewall	Layer 4
+Session drops	Layer 5
+SSL cert error	Layer 6
+500 / API error	Layer 7
+
+
+================================================================
+Real-World Example: Accessing a Website
+================================================================
+Layer 7 – Browser sends HTTP request
+
+Layer 6 – Encrypts using TLS
+
+Layer 5 – Session established
+
+Layer 4 – TCP ensures delivery
+
+Layer 3 – IP routing
+
+Layer 2 – MAC resolution
+
+Layer 1 – Bits sent over cable
