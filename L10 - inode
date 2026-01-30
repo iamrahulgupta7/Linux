@@ -1,0 +1,91 @@
+=============================================================
+inode
+=============================================================
+
+=============================================================
+What an inode is
+=============================================================
+An inode stores metadata about a file, but not the file’s name or its data.
+Each file has one inode, and that inode has a unique number within the filesystem.
+
+=============================================================
+What an inode contains
+=============================================================
+An inode typically stores:
+
+File type (regular file, directory, symlink, etc.)
+File size
+Owner (UID) and group (GID)
+Permissions (rwx)
+Timestamps
+atime (last access)
+mtime (last modification)
+ctime (last metadata change)
+Number of hard links
+Pointers to the data blocks on disk
+
+=============================================================
+What an inode does not contain
+=============================================================
+❌ File name
+❌ Directory path
+
+👉 File names live in directories, which map:
+filename → inode number
+
+
+Simple example
+ls -li
+Output:
+123456 -rw-r--r-- 1 user user 1024 Jan 30 file.txt
+
+Here:
+
+123456 = inode number
+file.txt = name stored in directory
+inode 123456 holds all metadata + data block pointers
+
+=============================================================
+Why inodes matter (real-world)
+=============================================================
+
+=============================================================
+1. Disk full but space still left 😵
+=============================================================
+
+You can run out of inodes even if disk space is available.
+df -h    # disk space
+df -i    # inode usage
+
+
+Common with:
+Millions of tiny files (logs, cache, temp files)
+
+=============================================================
+2. Hard links
+=============================================================
+Multiple filenames can point to the same inode:
+ln file1 file2
+
+Both names share:
+Same inode number
+Same data
+File is deleted only when link count = 0.
+
+=============================================================
+3. Deleting open files
+=============================================================
+If a file is deleted but still opened by a process:
+
+Directory entry removed
+Inode stays until process closes it
+This explains “disk space not freeing” issues.
+Directories and inodes
+A directory is also a file
+It contains a list of:
+filename → inode number
+
+Inode stores metadata, not filename or data.
+Filename is a mapping to an inode inside a directory.
+Multiple filenames can point to one inode (hard links).
+Disk can be full due to inode exhaustion.
